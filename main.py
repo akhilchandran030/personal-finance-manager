@@ -37,14 +37,14 @@ def save_data():
     category = category_entry.get()
     amount = amount_entry.get()
 
-    #Validate date format
+    # Validate date format
     try:
         datetime.strptime(date, "%d-%m-%Y")
     except ValueError:
         messagebox.showerror("Invalid Date", "Date must be in DD-MM-YYYY format")
         return
 
-    #Validate amount as number (can be float)
+    # Validate amount as number (can be float)
     try:
         float(amount)
     except ValueError:
@@ -66,5 +66,40 @@ def save_data():
 tk.Button(
     root, text="Save Expense", command=save_data, bg="#4CAF50", fg="white", width=20
 ).pack(pady=20)
+
+
+def view_expenses():
+    if not os.path.exists("expenses.csv"):
+        messagebox.showinfo("No Data", "No expenses found!")
+        return
+    top = tk.Toplevel(root)
+    top.title("All Expenses")
+    top.geometry("400x300")
+    top.config(bg="#f4f4f4")
+
+    with open("expenses.csv", "r") as file:
+        reader = csv.reader(file)
+        expenses = list(reader)
+
+    if not expenses:
+        tk.Label(top, text="No expenses yet!", bg="#ffffff").pack(pady=10)
+        return
+
+    for row in expenses:
+        tk.Label(top, text=" | ".join(row), anchor="w", bg="#ffffff").pack(
+            anchor="w", padx=10
+        )
+
+
+# View button
+tk.Button(
+    root,
+    text="View Expenses",
+    command=view_expenses,
+    bg="#2196F3",
+    fg="white",
+    width=20,
+).pack(pady=5)
+
 
 root.mainloop()
